@@ -3,13 +3,17 @@ const express = require("express");
 const { join } = require("path");
 const cookieParser = require("cookie-parser");
 const logger = require("morgan");
+const db = require("./db");
 
 const indexRouter = require("./routes/index");
 const pingRouter = require("./routes/ping");
 
 const { json, urlencoded } = express;
 
-var app = express();
+const app = express();
+
+// init mongodb connection
+db.connect(app);
 
 app.use(logger("dev"));
 app.use(json());
