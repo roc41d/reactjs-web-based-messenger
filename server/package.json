@@ -3,6 +3,7 @@
   "version": "0.0.0",
   "private": true,
   "scripts": {
+    "start": "nodemon ./bin/www",
     "dev": "nodemon ./bin/www",
     "debug": "nodemon  --inspect ./bin/www",
     "test": "NODE_ENV=test ./node_modules/.bin/mocha --exit --timeout 30000"
@@ -12,6 +13,7 @@
     "dotenv": "^8.2.0",
     "express": "^4.17.1",
     "http-errors": "~1.8.0",
+    "mongoose": "^5.11.11",
     "morgan": "^1.10.0",
     "nodemon": "^2.0.6"
   },
