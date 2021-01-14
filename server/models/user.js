@@ -2,10 +2,25 @@ const mongoose      = require("mongoose");
 const { Schema }    = require("mongoose");
 
 const userSchema = new Schema({
-  userName: String,
-  email: String,
-  password: String,
-  isActive: Boolean // use to check/control user online status
+  userName: {
+    type: String,
+    unique: true,
+    index: true,
+    required: true
+  },
+  email: {
+    type: String,
+    unique: true,
+    required: true
+  },
+  password: {
+    type: String,
+    required: true
+  },
+  createdAt: {
+    type: Date,
+    default: new Date()
+  }
 });
 
 module.exports = mongoose.model("User", userSchema);
