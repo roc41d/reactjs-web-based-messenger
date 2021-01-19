@@ -5,7 +5,6 @@ exports.connect = (app) => {
     useNewUrlParser: true,
     useUnifiedTopology: true,
   };
-
   const initConnection = () => {
     mongoose.Promise = global.Promise;
     mongoose
