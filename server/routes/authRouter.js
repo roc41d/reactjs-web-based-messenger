@@ -9,4 +9,5 @@ authRouter.post("/signup", authContoller.signUpValidation, (req, res, next) => {
 authRouter.post("/login", (req, res, next) => {
     authContoller.login(req, res, next)
 });
+
 module.exports = authRouter;
