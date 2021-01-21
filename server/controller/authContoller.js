@@ -115,7 +115,14 @@ const signUpValidation = [
     .isEmail()
     .withMessage("Email is not valid")
     .trim()
-    .escape(),
+    .escape()
+    .custom((value, {req}) => {
+      return User.findOne({ email: value }).then((user) => {
+        if (user) {
+          return Promise.reject("Email already in use");
+        }
+      });
+    }),
   check("password")
     .notEmpty()
     .isLength({ min: 6 })
