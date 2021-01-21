@@ -5,11 +5,10 @@ exports.connect = (app) => {
     useNewUrlParser: true,
     useUnifiedTopology: true,
   };
-
   const initConnection = () => {
     mongoose.Promise = global.Promise;
     mongoose
-      .connect(process.env.MONGODB_CONNECTION_URL, options)
+      .connect(process.env.MONGODB_CONNECTION_URL.trim(), options)
       .then(() => {
         console.log("MongoDB is connected");
         app.emit("ready");

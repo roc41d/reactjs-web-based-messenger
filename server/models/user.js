@@ -1,26 +1,20 @@
-const mongoose      = require("mongoose");
-const { Schema }    = require("mongoose");
+const mongoose = require("mongoose");
+const bcrypt = require("bcrypt");
 
-const userSchema = new Schema({
-  userName: {
-    type: String,
-    unique: true,
-    index: true,
-    required: true
-  },
-  email: {
-    type: String,
-    unique: true,
-    required: true
-  },
-  password: {
-    type: String,
-    required: true
-  },
-  createdAt: {
-    type: Date,
-    default: new Date()
-  }
+const userSchema = new mongoose.Schema({
+  username: { type: String, required: true, unique: true },
+  email: { type: String, required: true, unique: true },
+  password: { type: String, required: true },
+  createdAt: { type: Date, default: new Date() },
 });
+
+userSchema.methods.comparePassword = function(passwd, callback) {
+  bcrypt.compare(passwd, this.password, function(err, isMatch) {
+    if (err) {
+      return callback(err);
+    }
+    callback(null, isMatch);
+  });
+};
 
 module.exports = mongoose.model("User", userSchema);
