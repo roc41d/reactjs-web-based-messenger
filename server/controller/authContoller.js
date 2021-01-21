@@ -2,7 +2,9 @@ const jwt = require("jsonwebtoken");
 const bcrypt = require("bcrypt");
 const { check, validationResult } = require("express-validator/check");
 const User = require("../models/user");
+const utils = require("../utils/utils");
 const saltRounds = 10;
+const JWT_TOKEN_EXPIRATION = 60 * 60 * 24; // 1day
 
 const register = (req, res, next) => {
   const errors = validationResult(req);
@@ -13,15 +15,30 @@ const register = (req, res, next) => {
 
   bcrypt.hash(req.body.password, saltRounds, (err, hash) => {
     const newUser = new User({
-      userName: req.body.username,
+      username: req.body.username,
       email: req.body.email,
       password: hash,
     });
 
     newUser
       .save()
-      .then((data) => {
-        res.status(200).send(data);
+      .then((user) => {
+
+        const payload = {
+          id: user._id,
+          username: user.username,
+        };
+
+        const token = jwt.sign(payload, process.env.SECRET_KEY, {
+          expiresIn: JWT_TOKEN_EXPIRATION,
+        });
+
+        res
+          .status(201)
+          .cookie('token', token, { httpOnly: true, maxAge: JWT_TOKEN_EXPIRATION })
+          .send({
+            success: true,
+          });
       })
       .catch((err) => {
         res.status(500).send({
@@ -32,75 +49,79 @@ const register = (req, res, next) => {
 };
 
 const login = async (req, res) => {
-  const username = req.body.username || "";
-  const password = req.body.password || "";
-  if (username && password) {
-    User.findOne({ userName: username }, (error, user) => {
-      if (error) {
-        res.status(401).send({
-          success: false,
-          message: error.message,
-        });
-      } else {
-        if (!user) {
-          res.status(401).send({
-            success: false,
-            message: "User not found",
-          });
-        } else {
-          user.comparePassword(password, (error, isMatch) => {
-            if (isMatch && !error) {
-              const token = jwt.sign(user.toJSON(), process.env.SECRET_KEY, {
-                expiresIn: process.env.JWT_TOKEN_EXPIRATION,
-              });
+  const username = req.body.username;
+  const password = req.body.password;
 
-              res.status(200).send({
-                success: true,
-                user: user,
-                token: token,
-              });
-            } else {
-              res.status(401).send({
-                success: false,
-                message: "Wrong password",
-              });
-            }
+  try {
+
+    const user = await User.findOne({ username: username });
+    if (!user) {
+      res
+        .status(400)
+        .send({
+          success: false,
+          message: "User with username " + username + " not found",
+        });
+    } else {
+      user.comparePassword(password, (error, isMatch) => {
+        if (isMatch && !error) {
+
+          const payload = {
+            id: user._id,
+            username: username,
+          };
+
+          const token = jwt.sign(payload, process.env.SECRET_KEY, {
+            expiresIn: JWT_TOKEN_EXPIRATION,
           });
+
+          res
+            .status(201)
+            .cookie('token', token, { httpOnly: true, maxAge: JWT_TOKEN_EXPIRATION })
+            .send({
+              success: true,
+              data: utils.formatUserJson(user),
+            });
+        } else {
+          res
+            .status(400)
+            .send({
+              success: false,
+              message: "Incorrect password",
+            });
         }
-      }
-    });
-  } else {
-    return res.status(401).send({
-      success: false,
-      message: "Invalid logins",
-    });
+      });
+    }
+
+  } catch (err) {
+    res.status(500).send('Server Error');
   }
-};
+}
 
 const signUpValidation = [
   check("username")
-    .exists()
+    .notEmpty()
     .trim()
     .escape()
     .custom((value, { req }) => {
-      return User.findOne({ userName: value }).then((user) => {
+      return User.findOne({ username: value }).then((user) => {
         if (user) {
           return Promise.reject("Username already in use");
         }
       });
     }),
   check("email")
-    .exists()
+    .notEmpty()
     .isEmail()
     .withMessage("Email is not valid")
     .trim()
     .escape(),
   check("password")
-    .exists()
+    .notEmpty()
     .isLength({ min: 6 })
     .withMessage("Password must be 6+ characters long"),
   check("passwordConfirmation")
-    .exists()
+    .notEmpty()
     .custom((value, { req }) => {
       if (value !== req.body.password) {
         throw new Error("Password confirmation does not match password");

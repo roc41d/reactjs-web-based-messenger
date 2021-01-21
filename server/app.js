@@ -1,6 +1,5 @@
 const createError = require("http-errors");
 const express = require("express");
-const passport = require("passport");
 const { join } = require("path");
 const cookieParser = require("cookie-parser");
 const dotenv = require("dotenv");
@@ -22,8 +21,6 @@ const app = express();
 
 // init mongodb connection
 db.connect(app);
-
-app.use(passport.initialize());
 
 app.use(logger("dev"));
 app.use(json());
