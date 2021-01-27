@@ -7,33 +7,51 @@ import {
   Button,
   Typography,
   Grid,
-  Hidden,
   FormControl,
   Container,
 } from "@material-ui/core";
+import ImageSideBar from "../components/ImageSideBar";
 
 const useStyles = makeStyles({
   removeUnderLineOnLink: {
     textDecoration: "none",
   },
-  marginBottom40: {
-    marginBottom: '40%',
+  header: {
+    marginBottom: '25%',
+    marginTop: '5%',
+    display: 'inline-flex',
+    alignItems: 'baseline',
   },
-  grayText: {
+  headerText: {
+    marginRight: '25px',
     color: '#9c9c9c',
   },
   marginBottom3: {
     marginBottom: '3%',
   },
   marginBottom1: {
-    marginBottom: '1%',
+    marginBottom: '4%',
   },
   createAccountBtn: {
     marginLeft: '15%',
     outline: 'none',
   },
   loginBtn: {
-    marginTop: '5%',
+    marginTop: '12%',
+    margin: 'auto',
+    padding: '15px 45px',
+  },
+  image: {
+    height: '100vh',
+  },
+  topBtn: {
+    width: '180px',
+    lineHeight: '3em',
+    boxShadow: '0 0 5px'
+  },
+  loginContainer: {
+    paddingLeft: '150px',
+    paddingRight: '150px',
   },
 });
 export default function LoginPage() {
@@ -43,21 +61,17 @@ export default function LoginPage() {
   const classes = useStyles();
   return (
     <Grid container spacing={0}>
-      <Hidden smDown>
-        <Grid item xs={5}>
-          <h1>Side bar</h1>
-        </Grid>
-      </Hidden>
+      <ImageSideBar />
       <Grid item md={7} xs={12}>
-        <Container>
-          <Box display="flex" className={classes.marginBottom40}>
-            <Typography variant="subtitle1">Don't have an account? </Typography>
+        <Container className={classes.loginContainer}>
+          <div className={classes.header}>
+            <div className={classes.headerText}>Don't have an account? </div>
             <Link to="/signup" className={classes.removeUnderLineOnLink}>
-              <Button size="large" variant="outlined" color="primary">
+              <Button size="large" color="primary" className={classes.topBtn}>
                 Create account
               </Button>
             </Link>
-          </Box>
+          </div>
           <Box display="flex">
             <Typography variant="h4" fontWeight="fontWeightBold" className={classes.marginBottom3}>
               Welcome back!
@@ -67,6 +81,7 @@ export default function LoginPage() {
             <FormControl>
               <TextField
                 label="Email"
+                type="email"
                 onChange={(event) => setEmail(event.target.value)}
                 value={email}
                 className={classes.marginBottom1}
@@ -87,7 +102,7 @@ export default function LoginPage() {
 
             <Button
               variant="contained"
-              size="medium"
+              size="large"
               color="primary"
               className={classes.loginBtn}
             >
