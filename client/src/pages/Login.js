@@ -1,5 +1,5 @@
-import React, { useState } from "react";
-import { Link } from 'react-router-dom';
+import React, { useState, useEffect } from "react";
+import { Link } from "react-router-dom";
 import { makeStyles } from "@material-ui/core/styles";
 import {
   Box,
@@ -11,52 +11,87 @@ import {
   Container,
 } from "@material-ui/core";
 import ImageSideBar from "../components/ImageSideBar";
+import UserProvider from "../providers/userProvider";
 
 const useStyles = makeStyles({
   removeUnderLineOnLink: {
     textDecoration: "none",
   },
   header: {
-    marginBottom: '25%',
-    marginTop: '5%',
-    display: 'inline-flex',
-    alignItems: 'baseline',
+    marginBottom: "25%",
+    marginTop: "5%",
+    display: "inline-flex",
+    alignItems: "baseline",
   },
   headerText: {
-    marginRight: '25px',
-    color: '#9c9c9c',
+    marginRight: "25px",
+    color: "#9c9c9c",
   },
   marginBottom3: {
-    marginBottom: '3%',
+    marginBottom: "3%",
   },
   marginBottom1: {
-    marginBottom: '4%',
+    marginBottom: "4%",
   },
   createAccountBtn: {
-    marginLeft: '15%',
-    outline: 'none',
+    marginLeft: "15%",
+    outline: "none",
   },
   loginBtn: {
-    marginTop: '12%',
-    margin: 'auto',
-    padding: '15px 45px',
+    marginTop: "12%",
+    margin: "auto",
+    padding: "15px 45px",
   },
   image: {
-    height: '100vh',
+    height: "100vh",
   },
   topBtn: {
-    width: '180px',
-    lineHeight: '3em',
-    boxShadow: '0 0 5px'
+    width: "180px",
+    lineHeight: "3em",
+    boxShadow: "0 0 5px",
   },
   loginContainer: {
-    paddingLeft: '150px',
-    paddingRight: '150px',
+    paddingLeft: "150px",
+    paddingRight: "150px",
   },
 });
 export default function LoginPage() {
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
+
+  const [passwordError, setPasswordError] = useState(false);
+  const [emailError, setEmailError] = useState(false);
+
+  const mailFormat = /^[a-zA-Z0-9.!#$%&'*+/=?^_`{|}~-]+@[a-zA-Z0-9-]+(?:\.[a-zA-Z0-9-]+)*$/;
+  const isEmail = (email) => email.match(mailFormat);
+
+  const onFormSubmit = (event) => {
+    event.preventDefault();
+
+    let errors = [];
+
+    if (!isEmail(email)) {
+      setEmailError(true);
+      errors.push(true);
+    }
+
+    if (!password || (password && password.length < 6)) {
+      setPasswordError(true);
+      errors.push(true);
+    }
+
+    if (errors.length === 0) {
+      UserProvider.handleLogin(email, password)
+    }
+  };
+
+  useEffect(() => {
+    if (isEmail(email)) 
+      setEmailError(false);
+
+    if (password.length > 5)
+      setPasswordError(false);
+  }, [email, password]);
 
   const classes = useStyles();
   return (
@@ -73,42 +108,56 @@ export default function LoginPage() {
             </Link>
           </div>
           <Box display="flex">
-            <Typography variant="h4" fontWeight="fontWeightBold" className={classes.marginBottom3}>
+            <Typography
+              variant="h4"
+              fontWeight="fontWeightBold"
+              className={classes.marginBottom3}
+            >
               Welcome back!
             </Typography>
           </Box>
-          <Box display="flex" flexDirection="column">
-            <FormControl>
-              <TextField
-                label="Email"
-                type="email"
-                onChange={(event) => setEmail(event.target.value)}
-                value={email}
-                className={classes.marginBottom1}
-                required
-              />
-            </FormControl>
+          <form noValidate onSubmit={onFormSubmit}>
+            <Box display="flex" flexDirection="column">
+              <FormControl>
+                <TextField
+                  autoFocus
+                  label="Email"
+                  type="email"
+                  onChange={(event) => setEmail(event.target.value)}
+                  value={email}
+                  className={classes.marginBottom1}
+                  error={emailError}
+                  helperText={emailError && "Invalid email."}
+                  required
+                />
+              </FormControl>
 
-            <FormControl>
-              <TextField
-                label="Password"
-                type="password"
-                value={password}
-                onChange={(event) => setPassword(event.target.value)}
-                className={classes.marginBottom1}
-                required
-              />
-            </FormControl>
+              <FormControl>
+                <TextField
+                  label="Password"
+                  type="password"
+                  value={password}
+                  onChange={(event) => setPassword(event.target.value)}
+                  className={classes.marginBottom1}
+                  error={passwordError}
+                  helperText={
+                    passwordError && "Password must be at least 6 characters."
+                  }
+                  required
+                />
+              </FormControl>
 
-            <Button
-              variant="contained"
-              size="large"
-              color="primary"
-              className={classes.loginBtn}
-            >
-              Login
-            </Button>
-          </Box>
+              <Button
+                variant="contained"
+                size="large"
+                color="primary"
+                type="submit"
+                className={classes.loginBtn}
+              >
+                Login
+              </Button>
+            </Box>
+          </form>
         </Container>
       </Grid>
     </Grid>

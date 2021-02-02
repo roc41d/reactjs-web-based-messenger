@@ -5,6 +5,7 @@ import { BrowserRouter, Route, Switch } from "react-router-dom";
 import { theme } from "./themes/theme";
 import LoginPage from "./pages/Login";
 import SignUpPage from "./pages/Signup";
+import MessagerPage from "./pages/Messager";
 
 import "./App.css";
 
@@ -15,6 +16,7 @@ function App() {
         <Switch>
           <Route exact path="/" component={LoginPage} />
           <Route path="/signup" component={SignUpPage} />
+          <Route path="/messager" component={MessagerPage} />
         </Switch>
       </BrowserRouter>
     </MuiThemeProvider>

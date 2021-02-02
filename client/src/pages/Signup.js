@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
 import { Link } from "react-router-dom";
 import { makeStyles } from "@material-ui/core/styles";
 import {
@@ -11,6 +11,7 @@ import {
   Container,
 } from "@material-ui/core";
 import ImageSideBar from "../components/ImageSideBar";
+import UserProvider from "../providers/userProvider";
 
 const useStyles = makeStyles({
   removeUnderLineOnLink: {
@@ -59,6 +60,62 @@ export default function SignUpPage() {
   const [username, setUsername] = useState("");
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
+  const [confirmPassword, setConfirmPassword] = useState("");
+
+  const [usernameError, setUsernameError] = useState(false);
+  const [emailError, setEmailError] = useState(false);
+  const [passwordError, setPasswordError] = useState(false);
+  const [confirmPasswordError, setConfirmPasswordError] = useState(false);
+
+  const mailFormat = /^[a-zA-Z0-9.!#$%&'*+/=?^_`{|}~-]+@[a-zA-Z0-9-]+(?:\.[a-zA-Z0-9-]+)*$/;
+  const isEmail = (email) => email.match(mailFormat);
+
+  const onFormSubmit = (event) => {
+    event.preventDefault();
+
+    let errors = [];
+
+    if (!username) {
+        setUsernameError(true);
+        errors.push(true);
+    }
+
+    if (!isEmail(email)) {
+        setEmailError(true);
+        errors.push(true);
+    }
+
+    if (!password) {
+        setPasswordError(true);
+        errors.push(true);
+    }
+
+    if (password !== confirmPassword) {
+        setConfirmPasswordError(true);
+        errors.push(true);
+    }
+
+
+    if(errors.length === 0) {
+      console.log("onFormSubmit", username)
+      UserProvider.handleSignup(username, email, password, confirmPassword);
+    }
+  };
+
+  useEffect(() => {
+    if (username)
+        setUsernameError(false);
+
+    if (isEmail(email))
+        setEmailError(false);
+
+    if (password.length > 5)
+        setPasswordError(false);
+
+    if (password === confirmPassword)
+        setConfirmPasswordError(false);
+
+  }, [username, email, password, confirmPassword]);
 
   const classes = useStyles();
   return (
@@ -83,13 +140,17 @@ export default function SignUpPage() {
               Create an account
             </Typography>
           </Box>
+          <form noValidate onSubmit={onFormSubmit}>
           <Box display="flex" flexDirection="column">
             <FormControl>
               <TextField
+                autoFocus
                 label="Username"
                 onChange={(event) => setUsername(event.target.value)}
                 value={username}
                 className={classes.marginBottom1}
+                error={usernameError}
+                helperText={usernameError && "Name required."}
                 required
               />
             </FormControl>
@@ -97,9 +158,12 @@ export default function SignUpPage() {
               <TextField
                 label="Email"
                 type="email"
+                autoComplete="email"
                 onChange={(event) => setEmail(event.target.value)}
                 value={email}
                 className={classes.marginBottom1}
+                error={emailError}
+                helperText={emailError && "Invalid email."}
                 required
               />
             </FormControl>
@@ -110,6 +174,21 @@ export default function SignUpPage() {
                 value={password}
                 onChange={(event) => setPassword(event.target.value)}
                 className={classes.marginBottom1}
+                error={passwordError}
+                helperText={passwordError && "Password must be at least 6 characters."}
+                required
+              />
+            </FormControl>
+
+            <FormControl>
+              <TextField
+                label="Confirm Password"
+                type="password"
+                value={confirmPassword}
+                onChange={(event) => setConfirmPassword(event.target.value)}
+                className={classes.marginBottom1}
+                error={confirmPasswordError}
+                helperText={confirmPasswordError && "Confirm password must match password."}
                 required
               />
             </FormControl>
@@ -118,11 +197,14 @@ export default function SignUpPage() {
               variant="contained"
               size="large"
               color="primary"
+              type="submit"
+            //   onClick={onFormSubmit}
               className={classes.createBtn}
             >
               Create
             </Button>
           </Box>
+          </form>
         </Container>
       </Grid>
     </Grid>
