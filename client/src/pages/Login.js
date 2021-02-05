@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from "react";
+import React, { useState, useEffect, useContext } from "react";
 import { Link } from "react-router-dom";
 import { makeStyles } from "@material-ui/core/styles";
 import {
@@ -10,8 +10,9 @@ import {
   FormControl,
   Container,
 } from "@material-ui/core";
+import ToastAlert from "../components/ToastAlert";
 import ImageSideBar from "../components/ImageSideBar";
-import UserProvider from "../providers/userProvider";
+import { UserContext } from "../contexts/userProviderContext";
 
 const useStyles = makeStyles({
   removeUnderLineOnLink: {
@@ -56,6 +57,8 @@ const useStyles = makeStyles({
   },
 });
 export default function LoginPage() {
+  const { userActions, userState } = useContext(UserContext);
+
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
 
@@ -81,7 +84,7 @@ export default function LoginPage() {
     }
 
     if (errors.length === 0) {
-      UserProvider.handleLogin(email, password)
+      userActions.handleLogin(email, password)
     }
   };
 
@@ -160,6 +163,7 @@ export default function LoginPage() {
           </form>
         </Container>
       </Grid>
+      <ToastAlert trigger={userState.errorMsg} />
     </Grid>
   );
 }

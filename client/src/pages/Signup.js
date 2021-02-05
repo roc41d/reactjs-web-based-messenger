@@ -11,7 +11,6 @@ import {
   Container,
 } from "@material-ui/core";
 import ImageSideBar from "../components/ImageSideBar";
-import UserProvider from "../providers/userProvider";
 
 const useStyles = makeStyles({
   removeUnderLineOnLink: {
@@ -98,7 +97,6 @@ export default function SignUpPage() {
 
     if(errors.length === 0) {
       console.log("onFormSubmit", username)
-      UserProvider.handleSignup(username, email, password, confirmPassword);
     }
   };
 

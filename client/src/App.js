@@ -6,6 +6,7 @@ import { theme } from "./themes/theme";
 import LoginPage from "./pages/Login";
 import SignUpPage from "./pages/Signup";
 import MessagerPage from "./pages/Messager";
+import { UserProviderContext } from "./contexts/userProviderContext";
 
 import "./App.css";
 
@@ -13,11 +14,13 @@ function App() {
   return (
     <MuiThemeProvider theme={theme}>
       <BrowserRouter>
-        <Switch>
-          <Route exact path="/" component={LoginPage} />
-          <Route path="/signup" component={SignUpPage} />
-          <Route path="/messager" component={MessagerPage} />
-        </Switch>
+        <UserProviderContext>
+          <Switch>
+            <Route exact path="/" component={LoginPage} />
+            <Route path="/signup" component={SignUpPage} />
+            <Route path="/messager" component={MessagerPage} />
+          </Switch>
+        </UserProviderContext>
       </BrowserRouter>
     </MuiThemeProvider>
   );
