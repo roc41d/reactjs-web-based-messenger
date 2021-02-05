@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from "react";
+import React, { useState, useEffect, useContext } from "react";
 import { Link } from "react-router-dom";
 import { makeStyles } from "@material-ui/core/styles";
 import {
@@ -11,6 +11,7 @@ import {
   Container,
 } from "@material-ui/core";
 import ImageSideBar from "../components/ImageSideBar";
+import { UserContext } from "../contexts/userProviderContext";
 
 const useStyles = makeStyles({
   removeUnderLineOnLink: {
@@ -56,6 +57,8 @@ const useStyles = makeStyles({
 });
 
 export default function SignUpPage() {
+  const { userActions, userState } = useContext(UserContext);
+
   const [username, setUsername] = useState("");
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
@@ -96,7 +99,7 @@ export default function SignUpPage() {
 
 
     if(errors.length === 0) {
-      console.log("onFormSubmit", username)
+      userActions.handleSignup(username, email, password)
     }
   };
 

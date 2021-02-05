@@ -1,4 +1,4 @@
-import React, { createContext, useReducer } from "react";
+import React, { createContext, useReducer, useEffect } from "react";
 import { useHistory } from "react-router-dom";
 import { userReducer } from "../reducers/userReducer";
 import axios from "axios";
@@ -6,7 +6,13 @@ import axios from "axios";
 import {
   UPDATE_USER,
   USER_ERROR,
+  CLEAR_ERRORS
 } from "../reducers/userReducer";
+import {
+  LOGIN_URI,
+  SIGNUP_URI,
+  USER_DETAILS_URI
+} from "../utils/contanst"
 
 const UserContext = createContext();
 
@@ -19,10 +25,10 @@ const UserProviderContext = (props) => {
   const [userState, dispatch] = useReducer(userReducer, initialState);
 
   const actions = {
-    handleSignup: async (name, email, password, primaryLanguage) => {
+    handleSignup: async (username, email, password) => {
         try {
-          const res = await axios.post('', {
-            name,
+          const res = await axios.post(SIGNUP_URI, {
+            username,
             email,
             password,
           });
@@ -47,7 +53,7 @@ const UserProviderContext = (props) => {
 
       handleLogin: async (email, password) => {
         try {
-          const res = await axios.post('', { email, password });
+          const res = await axios.post(LOGIN_URI, { email, password });
           const data = res.data;
           if (res && (res.status === 200 || res.status === 201)) {
             await actions.getCurrenthUser();
@@ -57,18 +63,18 @@ const UserProviderContext = (props) => {
           dispatch({ type: UPDATE_USER, payload: data });
           return res;
         } catch (err) {
-          let errorMsg;
-  
-          dispatch({
-            type: USER_ERROR,
-            payload: errorMsg,
-          });
+          if (err.message.includes('500')) {
+            dispatch({
+              type: USER_ERROR,
+              payload: 'Server error',
+            });
+          }
         }
       },
 
       getCurrenthUser: async () => {
         try {
-          const res = await axios.get('');
+          const res = await axios.get(USER_DETAILS_URI);
   
           if (res.status === 200) {
             const data = await res.data;
@@ -82,7 +88,21 @@ const UserProviderContext = (props) => {
           history.push('/');
         }
       },
+
+      clearErrors: () => {
+        dispatch({ type: CLEAR_ERRORS });
+      },
   };
+
+  useEffect(() => {
+    let timer;
+    if (userState.errorMsg) {
+      timer = setTimeout(() => {
+        actions.clearErrors();
+      }, 3000);
+    }
+    return () => clearTimeout(timer);
+  });
 
   return (
     <UserContext.Provider
