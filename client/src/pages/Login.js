@@ -13,6 +13,9 @@ import {
 import ToastAlert from "../components/ToastAlert";
 import ImageSideBar from "../components/ImageSideBar";
 import { UserContext } from "../contexts/userProviderContext";
+import {
+  EMAIL_FORMAT
+} from "../utils/contanst"
 
 const useStyles = makeStyles({
   removeUnderLineOnLink: {
@@ -65,8 +68,7 @@ export default function LoginPage() {
   const [passwordError, setPasswordError] = useState(false);
   const [emailError, setEmailError] = useState(false);
 
-  const mailFormat = /^[a-zA-Z0-9.!#$%&'*+/=?^_`{|}~-]+@[a-zA-Z0-9-]+(?:\.[a-zA-Z0-9-]+)*$/;
-  const isEmail = (email) => email.match(mailFormat);
+  const isEmail = (email) => email.match(EMAIL_FORMAT);
 
   const onFormSubmit = (event) => {
     event.preventDefault();

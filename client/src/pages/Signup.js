@@ -12,6 +12,9 @@ import {
 } from "@material-ui/core";
 import ImageSideBar from "../components/ImageSideBar";
 import { UserContext } from "../contexts/userProviderContext";
+import {
+  EMAIL_FORMAT
+} from "../utils/contanst"
 
 const useStyles = makeStyles({
   removeUnderLineOnLink: {
@@ -69,36 +72,35 @@ export default function SignUpPage() {
   const [passwordError, setPasswordError] = useState(false);
   const [confirmPasswordError, setConfirmPasswordError] = useState(false);
 
-  const mailFormat = /^[a-zA-Z0-9.!#$%&'*+/=?^_`{|}~-]+@[a-zA-Z0-9-]+(?:\.[a-zA-Z0-9-]+)*$/;
-  const isEmail = (email) => email.match(mailFormat);
+  const isEmail = (email) => email.match(EMAIL_FORMAT);
 
   const onFormSubmit = (event) => {
     event.preventDefault();
 
-    let errors = [];
+    let errors = false;
 
     if (!username) {
         setUsernameError(true);
-        errors.push(true);
+        errors = true;
     }
 
     if (!isEmail(email)) {
         setEmailError(true);
-        errors.push(true);
+        errors = true;
     }
 
     if (!password) {
         setPasswordError(true);
-        errors.push(true);
+        errors = true;
     }
 
     if (password !== confirmPassword) {
         setConfirmPasswordError(true);
-        errors.push(true);
+        errors = true;
     }
 
 
-    if(errors.length === 0) {
+    if(!errors) {
       userActions.handleSignup(username, email, password)
     }
   };

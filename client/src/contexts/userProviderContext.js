@@ -36,18 +36,17 @@ const UserProviderContext = (props) => {
           dispatch({ type: UPDATE_USER, payload: data });
           history.push('/messenger');
         } catch (err) {
-          if (err.message.includes('400')) {
-            dispatch({
-              type: USER_ERROR,
-              payload: 'User already exists.',
-            });
-          }
-          if (err.message.includes('500')) {
-            dispatch({
-              type: USER_ERROR,
-              payload: 'Server error',
-            });
-          }
+          let errorMsg;
+          if(err.message.includes('400'))
+            errorMsg = 'User already exists.';
+
+          if(err.message.includes('500'))
+            errorMsg = 'Server error.';
+
+          dispatch({
+            type: USER_ERROR,
+            payload: errorMsg
+          });
         }
       },
 
@@ -56,19 +55,27 @@ const UserProviderContext = (props) => {
           const res = await axios.post(LOGIN_URI, { email, password });
           const data = res.data;
           if (res && (res.status === 200 || res.status === 201)) {
-            await actions.getCurrenthUser();
             history.push('/messenger');
           }
   
           dispatch({ type: UPDATE_USER, payload: data });
           return res;
         } catch (err) {
-          if (err.message.includes('500')) {
-            dispatch({
-              type: USER_ERROR,
-              payload: 'Server error',
-            });
-          }
+          let errorMsg;
+          if (err.message.includes('400'))
+            errorMsg = 'Invalid Credentials';
+
+          if (err.message.includes('404'))
+            errorMsg = 'User not found';
+            
+          if (err.message.includes('500'))
+            errorMsg = 'Server error';
+
+          dispatch({
+            type: USER_ERROR,
+            payload: errorMsg,
+          });
+
         }
       },
 
