@@ -82,7 +82,7 @@ export default function LoginPage() {
       errors.push(true);
     }
 
-    if (!password || (password && password.length < 6)) {
+    if (!password) {
       setPasswordError(true);
       errors.push(true);
     }
@@ -96,7 +96,7 @@ export default function LoginPage() {
     if (isEmail(email)) 
       setEmailError(false);
 
-    if (password.length > 5)
+    if (password)
       setPasswordError(false);
   }, [email, password]);
 
@@ -148,7 +148,7 @@ export default function LoginPage() {
                   className={classes.marginBottom1}
                   error={passwordError}
                   helperText={
-                    passwordError && "Password must be at least 6 characters."
+                    passwordError && "Password is required"
                   }
                   required
                 />

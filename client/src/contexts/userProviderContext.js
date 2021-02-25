@@ -48,7 +48,7 @@ const UserProviderContext = (props) => {
             payload: errorMsg
           });
         }
-      },
+    },
 
       handleLogin: async (email, password) => {
         try {
@@ -100,6 +100,15 @@ const UserProviderContext = (props) => {
         dispatch({ type: CLEAR_ERRORS });
       },
   };
+
+  useEffect(() => {
+
+    /**
+    * everytime is the APP loads, 
+    * get current user profile if user has an active seerion or redirect to login
+    */
+    actions.getCurrenthUser();
+  }, []);
 
   useEffect(() => {
     let timer;
