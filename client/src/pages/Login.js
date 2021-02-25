@@ -26,6 +26,8 @@ const useStyles = makeStyles({
     marginTop: "5%",
     display: "inline-flex",
     alignItems: "baseline",
+    position: 'relative',
+    left: '211px'
   },
   headerText: {
     marginRight: "25px",

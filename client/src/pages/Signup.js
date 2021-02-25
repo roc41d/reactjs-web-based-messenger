@@ -21,10 +21,12 @@ const useStyles = makeStyles({
     textDecoration: "none",
   },
   header: {
-    marginBottom: '25%',
+    marginBottom: '23%',
     marginTop: '5%',
     display: 'inline-flex',
     alignItems: 'baseline',
+    position: 'relative',
+    left: '211px'
   },
   headerText: {
     marginRight: '25px',
@@ -34,10 +36,10 @@ const useStyles = makeStyles({
     marginBottom: "3%",
   },
   marginBottom1: {
-    marginBottom: "4%",
+    marginBottom: "3%",
   },
   createAccountBtn: {
-    marginLeft: "15%",
+    marginLeft: "10%",
     outline: "none",
   },
   createBtn: {
