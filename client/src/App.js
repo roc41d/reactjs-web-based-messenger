@@ -5,8 +5,9 @@ import { BrowserRouter, Route, Switch } from "react-router-dom";
 import { theme } from "./themes/theme";
 import LoginPage from "./pages/Login";
 import SignUpPage from "./pages/Signup";
-import MessagerPage from "./pages/Messager";
+import MessengerPage from "./pages/Messenger";
 import { UserProviderContext } from "./contexts/userProviderContext";
+import PrivateRoute from "./routing/PrivateRoute";
 
 import "./App.css";
 
@@ -18,7 +19,7 @@ function App() {
           <Switch>
             <Route exact path="/" component={LoginPage} />
             <Route path="/signup" component={SignUpPage} />
-            <Route path="/messager" component={MessagerPage} />
+            <PrivateRoute path="/messenger" component={MessengerPage} />
           </Switch>
         </UserProviderContext>
       </BrowserRouter>
