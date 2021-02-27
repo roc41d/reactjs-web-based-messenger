@@ -53,7 +53,7 @@ const useStyles = makeStyles({
   topBtn: {
     width: '150px',
     lineHeight: '3em',
-    boxShadow: "0 0 5px",
+    boxShadow: "0 0 15px",
   },
   singnupContainer: {
     paddingLeft: "150px",
@@ -131,7 +131,7 @@ export default function SignUpPage() {
           <div className={classes.header}>
             <div className={classes.headerText}>Already have an account? </div>
             <Link to="/" className={classes.removeUnderLineOnLink}>
-              <Button size="large" color="primary" className={classes.topBtn}>
+              <Button size="large" className={classes.topBtn}>
               Login
               </Button>
             </Link>
@@ -203,7 +203,6 @@ export default function SignUpPage() {
               size="large"
               color="primary"
               type="submit"
-            //   onClick={onFormSubmit}
               className={classes.createBtn}
             >
               Create

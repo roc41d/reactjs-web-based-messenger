@@ -34,7 +34,7 @@ const useStyles = makeStyles({
     color: "#9c9c9c",
   },
   marginBottom3: {
-    marginBottom: "3%",
+    marginBottom: "4%",
   },
   marginBottom1: {
     marginBottom: "4%",
@@ -54,7 +54,7 @@ const useStyles = makeStyles({
   topBtn: {
     width: "180px",
     lineHeight: "3em",
-    boxShadow: "0 0 5px",
+    boxShadow: "0 0 15px",
   },
   loginContainer: {
     paddingLeft: "150px",
@@ -109,7 +109,7 @@ export default function LoginPage() {
           <div className={classes.header}>
             <div className={classes.headerText}>Don't have an account? </div>
             <Link to="/signup" className={classes.removeUnderLineOnLink}>
-              <Button size="large" color="primary" className={classes.topBtn}>
+              <Button size="large" className={classes.topBtn}>
                 Create account
               </Button>
             </Link>

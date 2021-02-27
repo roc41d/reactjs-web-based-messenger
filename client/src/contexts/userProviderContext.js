@@ -38,7 +38,7 @@ const UserProviderContext = (props) => {
         } catch (err) {
           let errorMsg;
           if(err.message.includes('400'))
-            errorMsg = 'User already exists.';
+            errorMsg = 'Invalid credentials';
 
           if(err.message.includes('500'))
             errorMsg = 'Server error.';
@@ -63,7 +63,7 @@ const UserProviderContext = (props) => {
         } catch (err) {
           let errorMsg;
           if (err.message.includes('400'))
-            errorMsg = 'Invalid Credentials';
+            errorMsg = 'Invalid credentials';
 
           if (err.message.includes('404'))
             errorMsg = 'User not found';
