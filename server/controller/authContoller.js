@@ -127,14 +127,6 @@ const signUpValidation = [
     .notEmpty()
     .isLength({ min: 6 })
     .withMessage("Password must be 6+ characters long"),
-  check("passwordConfirmation")
-    .notEmpty()
-    .custom((value, { req }) => {
-      if (value !== req.body.password) {
-        throw new Error("Password confirmation does not match password");
-      }
-      return true;
-    }),
 ];
 
 const authController = {
