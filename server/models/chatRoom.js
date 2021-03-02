@@ -7,7 +7,7 @@ const chatRoomSchema = new mongoose.Schema(
   },
   {
     timestamps: true,
-    collection: "chatRoom",
+    collection: "ChatRoom",
   }
 );
 
