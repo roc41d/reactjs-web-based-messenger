@@ -12,6 +12,8 @@ const pingRouter = require("./routes/ping");
 const authRouter = require("./routes/authRouter");
 const userRouter = require("./routes/userRouter");
 
+const chatRouter = require("./routes/chatRouter");
+
 const { json, urlencoded } = express;
 
 // load env
@@ -32,6 +34,7 @@ app.use("/", indexRouter);
 app.use("/ping", pingRouter);
 app.use("/api/auth", authRouter);
 app.use("/api/user", userRouter);
+app.use("/api/room", chatRouter)
 
 // catch 404 and forward to error handler
 app.use(function(req, res, next) {

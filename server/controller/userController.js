@@ -17,8 +17,19 @@ const userProfile = async (req, res) => {
     }
 };
 
+const getUserByIds = async (userIds) => {
+  try {
+    const users = await User.find({ _id: { $in: userIds } });
+    return users;
+
+  } catch (error) {
+    throw error;
+  }
+}
+
 const userController = {
-    userProfile
+    userProfile,
+    getUserByIds
 };
 
 module.exports = userController;
