@@ -5,6 +5,7 @@ const cookieParser = require("cookie-parser");
 const dotenv = require("dotenv");
 const logger = require("morgan");
 const db = require("./db");
+const auth = require("./middleware/auth");
 
 const indexRouter = require("./routes/index");
 const pingRouter = require("./routes/ping");

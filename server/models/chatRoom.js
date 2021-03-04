@@ -1,13 +1,15 @@
 const mongoose = require("mongoose");
+const { v4: uuidv4 } = require('uuid');
 
 const chatRoomSchema = new mongoose.Schema(
   {
+    _id: { type: String, default: () => uuidv4() },
     chatInitiator: { type: String, required: true },
     userIds: { type: Array, required: true },
   },
   {
     timestamps: true,
-    collection: "ChatRoom",
+    collection: "chatroom",
   }
 );
 

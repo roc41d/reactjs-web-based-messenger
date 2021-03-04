@@ -2,7 +2,7 @@ const ChatRoomModel = require("../models/chatRoom");
 const ChatMessageModel = require("../models/chatMessage");
 const { check, validationResult } = require("express-validator");
 
-const initiate = async (req, res) => {
+initiate = async (req, res) => {
     try {
         const errors = validationResult(req);
 
@@ -20,7 +20,7 @@ const initiate = async (req, res) => {
     }
 };
 
-const postMessage = async (req, res) => {
+postMessage = async (req, res) => {
     try {
         const roomId = req.params.roomId;
         const errors = validationResult(req);
@@ -29,16 +29,49 @@ const postMessage = async (req, res) => {
             return res.status(400).json({ errors: errors.array() });
         }
 
-        console.log("postMessage", req.body, req.params);
         const message = req.body.message;
-        const currentUser = req.userId;
-        //   const post = await ChatMessageModel.createPostInChatRoom(roomId, messagePayload, currentUser);
-        //   return res.status(200).json({ success: true, post });
-        return res.status(200).json({ success: true });
+        const currentUser = req.body.userId;
+
+        const post = await ChatMessageModel.createPostInChatRoom(roomId, message, currentUser);
+        return res.status(200).json({ success: true, post });
     } catch (error) {
         return res.status(500).json({ success: false, error: error })
     }
 },
+
+getConversationByRoomId = async (req, res) => {
+    try {
+      const roomId = req.params.roomId;
+      const room = await ChatRoomModel.getChatRoomByRoomId(roomId)
+      if (!room) {
+        return res.status(400).json({
+          success: false,
+          message: 'No room exists for this id',
+        })
+      }
+
+      const conversation = await ChatMessageModel.getConversationByRoomId(roomId);
+      return res.status(200).json({
+        success: true,
+        conversation
+      });
+    } catch (error) {
+      return res.status(500).json({ success: false, error });
+    }
+},
+
+getUserConversations = async (req, res) => {
+    try {
+      const currentUser = req.user._id;
+
+      const rooms = await ChatRoomModel.getChatRoomsByUserId(currentUser);
+      const roomIds = rooms.map(room => room._id);
+    //   const userConversations = await ChatMessageModel.getUserConversations(roomIds, currentUser);
+      return res.status(200).json({ success: true, conversation: userConversations });
+    } catch (error) {
+      return res.status(500).json({ success: false, error: error })
+    }
+  },
 
 initiateChatValidation = [
     check("userIds")
@@ -61,6 +94,8 @@ postMessageValidation = [
 const chatController = {
     initiate,
     postMessage,
+    getConversationByRoomId,
+    getUserConversations,
     initiateChatValidation,
     postMessageValidation
 };
