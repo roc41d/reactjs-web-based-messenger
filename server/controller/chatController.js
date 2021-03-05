@@ -11,7 +11,7 @@ initiate = async (req, res) => {
         }
 
         const userIds = req.body.userIds;
-        const chatInitiator = req.body.chatInitiator;
+        const chatInitiator = req.user.id;
         const allUserIds = [...userIds, chatInitiator];
         const chatRoom = await ChatRoomModel.initiateChat(allUserIds, chatInitiator);
         return res.status(200).json({ success: true, chatRoom });
@@ -30,7 +30,7 @@ postMessage = async (req, res) => {
         }
 
         const message = req.body.message;
-        const currentUser = req.body.userId;
+        const currentUser = req.user.id;
 
         const post = await ChatMessageModel.createPostInChatRoom(roomId, message, currentUser);
         return res.status(200).json({ success: true, post });
@@ -39,7 +39,7 @@ postMessage = async (req, res) => {
     }
 },
 
-getConversationByRoomId = async (req, res) => {
+getChatMessageByRoomId = async (req, res) => {
     try {
       const roomId = req.params.roomId;
       const room = await ChatRoomModel.getChatRoomByRoomId(roomId)
@@ -50,7 +50,7 @@ getConversationByRoomId = async (req, res) => {
         })
       }
 
-      const conversation = await ChatMessageModel.getConversationByRoomId(roomId);
+      const conversation = await ChatMessageModel.getChatMessageByRoomId(roomId);
       return res.status(200).json({
         success: true,
         conversation
@@ -60,14 +60,15 @@ getConversationByRoomId = async (req, res) => {
     }
 },
 
-getUserConversations = async (req, res) => {
+getUserChatRooms = async (req, res) => {
     try {
-      const currentUser = req.user._id;
+      const currentUser = req.user.id;
 
       const rooms = await ChatRoomModel.getChatRoomsByUserId(currentUser);
       const roomIds = rooms.map(room => room._id);
-    //   const userConversations = await ChatMessageModel.getUserConversations(roomIds, currentUser);
-      return res.status(200).json({ success: true, conversation: userConversations });
+
+      const userChatRooms = await ChatMessageModel.getUserChatRooms(roomIds, currentUser);
+      return res.status(200).json({ success: true, conversation: userChatRooms });
     } catch (error) {
       return res.status(500).json({ success: false, error: error })
     }
@@ -94,8 +95,8 @@ postMessageValidation = [
 const chatController = {
     initiate,
     postMessage,
-    getConversationByRoomId,
-    getUserConversations,
+    getChatMessageByRoomId,
+    getUserChatRooms,
     initiateChatValidation,
     postMessageValidation
 };

@@ -57,4 +57,13 @@ chatRoomSchema.statics.initiateChat = async function (userIds, chatInitiator) {
   }
 };
 
+chatRoomSchema.statics.userRecentChatRooms = async function (chatRoomIds, currentUserOnlineId) {
+  try {
+    
+    return {};
+  } catch (error) {
+    throw error;
+  }
+}
+
 module.exports = mongoose.model("ChatRoom", chatRoomSchema);

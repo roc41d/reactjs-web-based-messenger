@@ -29,7 +29,7 @@ chatMessageSchema.statics.createPostInChatRoom = async function (chatRoomId, mes
   }
 }
 
-chatMessageSchema.statics.getConversationByRoomId = async function (chatRoomId) {
+chatMessageSchema.statics.getChatMessageByRoomId = async function (chatRoomId) {
   try {
     return this.aggregate([
       { $match: { chatRoomId } },
@@ -43,6 +43,37 @@ chatMessageSchema.statics.getConversationByRoomId = async function (chatRoomId) 
         }
       },
       { $unwind: "$postedByUser" }
+    ]);
+  } catch (error) {
+    throw error;
+  }
+}
+
+chatMessageSchema.statics.getUserChatRooms = async function (chatRoomIds) {
+  try {
+    return this.aggregate([
+      { $match: { chatRoomId: { $in: chatRoomIds } } },
+      {
+        $group: {
+          _id: '$chatRoomId',
+          messageId: { $last: '$_id' },
+          chatRoomId: { $last: '$chatRoomId' },
+          message: { $last: '$message' },
+          postedByUser: { $last: '$postedByUser' },
+          createdAt: { $last: '$createdAt' },
+        }
+      },
+      { $sort: { createdAt: -1 } },
+      {
+        $group: {
+          _id: '$roomInfo._id',
+          messageId: { $last: '$messageId' },
+          chatRoomId: { $last: '$chatRoomId' },
+          message: { $last: '$message' },
+          postedByUser: { $last: '$postedByUser' },
+          createdAt: { $last: '$createdAt' },
+        },
+      }
     ]);
   } catch (error) {
     throw error;

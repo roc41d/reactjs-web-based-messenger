@@ -34,8 +34,8 @@ app.use(express.static(join(__dirname, "public")));
 app.use("/", indexRouter);
 app.use("/ping", pingRouter);
 app.use("/api/auth", authRouter);
-app.use("/api/user", userRouter);
-app.use("/api/room", chatRouter)
+app.use("/api/user", auth, userRouter);
+app.use("/api/room", auth, chatRouter)
 
 // catch 404 and forward to error handler
 app.use(function(req, res, next) {
