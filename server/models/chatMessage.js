@@ -49,6 +49,20 @@ chatMessageSchema.statics.getChatMessageByRoomId = async function (chatRoomId) {
   }
 }
 
+chatMessageSchema.statics.markMessageAsRead = async function (chatRoomId) {
+  try {
+    return this.updateMany(
+      { chatRoomId: chatRoomId },
+      { $set: { "readByRecipient" : true } },
+      {
+        multi: true
+      }
+    );
+  } catch (error) {
+    throw error;
+  }
+}
+
 chatMessageSchema.statics.getUserRecentChats = async function (chatRoomIds, options) {
   try {
     return this.aggregate([

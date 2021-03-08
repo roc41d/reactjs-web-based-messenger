@@ -83,7 +83,25 @@ getUserRecentChats = async (req, res) => {
     } catch (error) {
       return res.status(500).json({ success: false, error: error })
     }
-  },
+},
+
+markMessageAsRead = async (req, res) => {
+  try {
+    const currentUser = req.user.id;
+    const roomId = req.params.roomId;
+
+    const isUserInChat = await ChatRoomModel.isUserInChatRoom(roomId, currentUser);
+
+    if (!isUserInChat) {
+      return res.status(400).json({ message: "User not in chat" });
+    }
+
+    await ChatMessageModel.markMessageAsRead(roomId);
+    return res.status(200).json({ success: true });
+  } catch (error) {
+    return res.status(500).json({ success: false, error: error })
+  }
+},
 
 initiateChatValidation = [
     check("userIds")
@@ -108,6 +126,7 @@ const chatController = {
     postMessage,
     getChatMessageByRoomId,
     getUserRecentChats,
+    markMessageAsRead,
     initiateChatValidation,
     postMessageValidation
 };

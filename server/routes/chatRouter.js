@@ -19,4 +19,8 @@ chatRouter.get("/:roomId", (req, res, next) => {
     chatController.getChatMessageByRoomId(req, res, next)
 });
 
+chatRouter.put("/:roomId", (req, res, next) => {
+    chatController.markMessageAsRead(req, res, next)
+});
+
 module.exports = chatRouter;
