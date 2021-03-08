@@ -57,4 +57,20 @@ chatRoomSchema.statics.initiateChat = async function (userIds, chatInitiator) {
   }
 };
 
+chatRoomSchema.statics.isUserInChatRoom = async function (roomId, userId) {
+  try {
+    const room = await this.find({ 
+      $and: [ 
+        { _id: roomId }, 
+        { userIds: { $in: [userId] } } 
+      ]
+    });
+
+    return room.length > 0 ? true: false;
+    
+  } catch (error) {
+    throw error;
+  }
+};
+
 module.exports = mongoose.model("ChatRoom", chatRoomSchema);

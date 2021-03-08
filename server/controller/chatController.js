@@ -32,6 +32,12 @@ postMessage = async (req, res) => {
         const message = req.body.message;
         const currentUser = req.user.id;
 
+        const isUserInChat = await ChatRoomModel.isUserInChatRoom(roomId, currentUser);
+
+        if (!isUserInChat) {
+          return res.status(400).json({ message: "User not in chat" });
+        }
+
         const post = await ChatMessageModel.createPostInChatRoom(roomId, message, currentUser);
         return res.status(200).json({ success: true, post });
     } catch (error) {

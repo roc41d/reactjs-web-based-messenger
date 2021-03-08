@@ -7,7 +7,7 @@ chatRouter.post("/initiate", chatController.initiateChatValidation, (req, res, n
     chatController.initiate(req, res, next)
 });
 
-chatRouter.post("/:roomId/message", chatController.postMessageValidation, (req, res, next) => {
+chatRouter.post("/:roomId", chatController.postMessageValidation, (req, res, next) => {
     chatController.postMessage(req, res, next)
 });
 
@@ -15,7 +15,7 @@ chatRouter.get("/user-recent-chats", (req, res, next) => {
     chatController.getUserRecentChats(req, res, next)
 })
 
-chatRouter.post("/:roomId", (req, res, next) => {
+chatRouter.get("/:roomId", (req, res, next) => {
     chatController.getChatMessageByRoomId(req, res, next)
 });
 
