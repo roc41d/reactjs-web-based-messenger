@@ -49,31 +49,31 @@ chatMessageSchema.statics.getChatMessageByRoomId = async function (chatRoomId) {
   }
 }
 
-chatMessageSchema.statics.getUserChatRooms = async function (chatRoomIds) {
+chatMessageSchema.statics.getUserRecentChats = async function (chatRoomIds, options) {
   try {
     return this.aggregate([
       { $match: { chatRoomId: { $in: chatRoomIds } } },
+      { $sort: { createdAt: 1 } },
       {
-        $group: {
-          _id: '$chatRoomId',
-          messageId: { $last: '$_id' },
-          chatRoomId: { $last: '$chatRoomId' },
-          message: { $last: '$message' },
-          postedByUser: { $last: '$postedByUser' },
-          createdAt: { $last: '$createdAt' },
+        $lookup: {
+          from: 'chatroom',
+          localField: 'chatRoomId',
+          foreignField: '_id',
+          as: 'roomInfo',
         }
       },
-      { $sort: { createdAt: -1 } },
+      { $unwind: "$roomInfo" },
       {
-        $group: {
-          _id: '$roomInfo._id',
-          messageId: { $last: '$messageId' },
-          chatRoomId: { $last: '$chatRoomId' },
-          message: { $last: '$message' },
-          postedByUser: { $last: '$postedByUser' },
-          createdAt: { $last: '$createdAt' },
-        },
-      }
+        $lookup: {
+          from: 'users',
+          localField: 'postedByUser',
+          foreignField: '_id',
+          as: 'userProfile',
+        }
+      },
+      { $unwind: '$userProfile'},
+      { $skip: options.page * options.limit },
+      { $limit: options.limit },
     ]);
   } catch (error) {
     throw error;

@@ -60,15 +60,20 @@ getChatMessageByRoomId = async (req, res) => {
     }
 },
 
-getUserChatRooms = async (req, res) => {
+getUserRecentChats = async (req, res) => {
     try {
       const currentUser = req.user.id;
 
       const rooms = await ChatRoomModel.getChatRoomsByUserId(currentUser);
       const roomIds = rooms.map(room => room._id);
 
-      const userChatRooms = await ChatMessageModel.getUserChatRooms(roomIds, currentUser);
-      return res.status(200).json({ success: true, conversation: userChatRooms });
+      const options = {
+        page: req.query.page ? parseInt(req.query.page) : 0,
+        limit: req.query.limit ? parseInt(req.query.limit) : 10,
+      };
+
+      const userChatRooms = await ChatMessageModel.getUserRecentChats(roomIds, options);
+      return res.status(200).json({ success: true, chats: userChatRooms });
     } catch (error) {
       return res.status(500).json({ success: false, error: error })
     }
@@ -96,7 +101,7 @@ const chatController = {
     initiate,
     postMessage,
     getChatMessageByRoomId,
-    getUserChatRooms,
+    getUserRecentChats,
     initiateChatValidation,
     postMessageValidation
 };
