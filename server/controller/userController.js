@@ -17,8 +17,40 @@ const userProfile = async (req, res) => {
     }
 };
 
+const getUserByIds = async (userIds) => {
+  try {
+    const users = await User.find({ _id: { $in: userIds } });
+    return users;
+
+  } catch (error) {
+    throw error;
+  }
+}
+
+const searchUsers = async (req, res) => {
+  try {
+    const searchQuery = req.query.searchquery;
+
+    if (searchQuery != null) {
+
+      const users = await User.find({username: { $regex: searchQuery, $options: 'i' }})
+      return res.status(200).json({
+        success: true,
+        users
+      });
+    } else {
+      res.end();
+    }
+
+  } catch (error) {
+    return res.status(500).json({ success: false, error });
+  }
+}
+
 const userController = {
-    userProfile
+    userProfile,
+    getUserByIds,
+    searchUsers
 };
 
 module.exports = userController;
