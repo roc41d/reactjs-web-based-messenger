@@ -48,12 +48,19 @@ postMessage = async (req, res) => {
 getChatMessageByRoomId = async (req, res) => {
     try {
       const roomId = req.params.roomId;
+      const currentUser = req.user.id;
       const room = await ChatRoomModel.getChatRoomByRoomId(roomId)
       if (!room) {
         return res.status(400).json({
           success: false,
           message: 'No room exists for this id',
         })
+      }
+
+      const isUserInChat = await ChatRoomModel.isUserInChatRoom(roomId, currentUser);
+
+      if (!isUserInChat) {
+        return res.status(400).json({ message: "User not in chat" });
       }
 
       const conversation = await ChatMessageModel.getChatMessageByRoomId(roomId);
