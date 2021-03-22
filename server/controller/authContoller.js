@@ -49,18 +49,18 @@ const register = (req, res, next) => {
 };
 
 const login = async (req, res) => {
-  const username = req.body.username;
+  const email = req.body.email;
   const password = req.body.password;
 
   try {
 
-    const user = await User.findOne({ username: username });
+    const user = await User.findOne({ email: email });
     if (!user) {
       res
         .status(400)
         .send({
           success: false,
-          message: "User with username " + username + " not found",
+          message: "Invalid ",
         });
     } else {
       user.comparePassword(password, (error, isMatch) => {
@@ -68,7 +68,7 @@ const login = async (req, res) => {
 
           const payload = {
             id: user._id,
-            username: username,
+            email: email,
           };
 
           const token = jwt.sign(payload, process.env.SECRET_KEY, {
